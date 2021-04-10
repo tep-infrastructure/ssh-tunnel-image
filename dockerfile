@@ -1,25 +1,27 @@
-FROM ubuntu
+FROM ubuntu:20.04
+
+LABEL org.opencontainers.image.source https://github.com/tep-infrastructure/ssh-tunnel-image
 
 # the port to bind to on the remote server. connections to this port
 # on remote will be tunnelled
-ARG in_port=8888
+ENV IN_PORT
 
 # the server to send tunnelled traffic
-ARG out_server=tomserver
+ENV OUT_SERVER
 
 # the port to send tunnelled traffic
-ARG out_port=80
+ENV OUT_PORT
 
 # the user and address of the remote server
-ARG target=
+ENV TARGET
 
-ENV in_port=${in_port}
-ENV out_server=${out_server}
-ENV out_port=${out_port}
-ENV target=${target}
+ENV VAULT_PATH
+ENV VAULT_SECRET
+ENV VAULT_TOKEN
 
-RUN apt -y update
-RUN apt -y install openssh-client
-COPY tunnel.pem tunnel.pem
-RUN chmod 400 tunnel.pem
-ENTRYPOINT ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -o ExitOnForwardFailure=yes -N -R $in_port:$out_server:$out_port -i tunnel.pem $target
+RUN apt -y update && apt -y install openssh-client curl
+
+COPY tunnel.sh ./
+RUN chmod +x tunnel.sh
+
+ENTRYPOINT ./tunnel.sh
