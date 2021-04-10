@@ -1,5 +1,11 @@
 #!/bin/bash
 
+TOKEN=$(curl --insecure --silent \
+    --request POST \
+    --data '{ "password": "" }' \
+    https://vault.internal/v1/auth/userpass/login/eg \
+    | jq -r '.auth.client_token' )
+
 SECRETS=$(curl --insecure --silent \
     -H "X-Vault-Token: ${TOKEN}" \
     ${VAULT_PATH})
