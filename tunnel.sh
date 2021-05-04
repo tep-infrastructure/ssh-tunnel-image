@@ -6,8 +6,6 @@ echo "Out port: $OUT_PORT"
 echo "Target: $TARGET"
 echo "PEM path: $PEM_PATH"
 
-ls -ll $PEM_PATH/..
-ls -ll $PEM_PATH
 cp $PEM_PATH tunnel.pem
 chmod 400 tunnel.pem
 
