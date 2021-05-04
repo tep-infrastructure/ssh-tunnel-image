@@ -15,12 +15,9 @@ ENV OUT_PORT=
 # the user and address of the remote server
 ENV TARGET=
 
-ENV VAULT_PATH=
-ENV VAULT_SECRET=
-ENV VAULT_USERNAME=
-ENV VAULT_PASSWORD=
+ENV PEM_PATH=
 
-RUN apt-get -y update && apt-get -y install openssh-client curl jq
+RUN apt-get -y update && apt-get -y install openssh-client
 
 COPY tunnel.sh ./
 RUN chmod +x tunnel.sh

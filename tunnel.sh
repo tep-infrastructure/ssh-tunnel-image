@@ -1,20 +1,14 @@
 #!/bin/bash
 
-SECRETS=$(curl --insecure --silent \
-    -H "X-Vault-Token: ${VAULT_TOKEN}" \
-    ${VAULT_PATH})
-
 echo "In port: $IN_PORT"
 echo "Out server: $OUT_SERVER"
 echo "Out port: $OUT_PORT"
 echo "Target: $TARGET"
+echo "PEM path: $PEM_PATH"
 
-PEM=$( echo ${SECRETS} | jq -r "[.data[].${VAULT_SECRET}][0]" )
-
-echo $PEM | base64 --decode > tunnel.pem
-chmod 400 tunnel.pem
+chmod 400 $PEM_PATH
 
 ssh -vvv -o StrictHostKeyChecking=no \
     -o ServerAliveInterval=60 \
     -o ExitOnForwardFailure=yes \
-    -N -R $IN_PORT:$OUT_SERVER:$OUT_PORT -i tunnel.pem $TARGET
+    -N -R $IN_PORT:$OUT_SERVER:$OUT_PORT -i $PEM_PATH $TARGET
